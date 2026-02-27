@@ -25,7 +25,7 @@ jobs:
 
       # Clone and build the footprint dependency
       - name: Clone footprint library
-        run: git clone https://github.com/sanjay1909/footPrint.git ../footPrint
+        run: git clone https://x-access-token:${{ github.token }}@github.com/sanjay1909/footPrint.git ../footPrint
       - name: Install footprint dependencies
         run: cd ../footPrint && npm ci
       - name: Build footprint
