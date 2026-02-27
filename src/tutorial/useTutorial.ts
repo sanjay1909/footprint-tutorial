@@ -46,7 +46,8 @@ export function useTutorial() {
 
   const allBuildNodes = useMemo(() => {
     if (phase === 'build') {
-      return currentStep?.nodes ?? [];
+      const buildStep = currentStep as import('./types').BuildStep;
+      return buildStep?.nodes ?? [];
     }
     // In execute phase, show all nodes from last build step
     const lastBuild = lesson.buildSteps[lesson.buildSteps.length - 1];
@@ -55,7 +56,8 @@ export function useTutorial() {
 
   const allBuildEdges = useMemo(() => {
     if (phase === 'build') {
-      return currentStep?.edges ?? [];
+      const buildStep = currentStep as import('./types').BuildStep;
+      return buildStep?.edges ?? [];
     }
     const lastBuild = lesson.buildSteps[lesson.buildSteps.length - 1];
     return lastBuild?.edges ?? [];

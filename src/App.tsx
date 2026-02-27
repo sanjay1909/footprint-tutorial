@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTutorial } from './tutorial/useTutorial';
 import { Header } from './layout/Header';
 import { SplitLayout } from './layout/SplitLayout';
@@ -12,7 +12,6 @@ import './App.css';
 
 function App() {
   const {
-    lesson,
     lessons,
     lessonIndex,
     selectLesson,
