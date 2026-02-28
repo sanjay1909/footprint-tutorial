@@ -1,0 +1,35 @@
+"use strict";
+/**
+ * logger - Simple logging utility for the library
+ *
+ * WHY: Provides a consistent logging interface that can be easily
+ * swapped out or configured in the future.
+ *
+ * DESIGN: Thin wrapper around console methods. Keeps the library
+ * decoupled from specific logging implementations.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logger = void 0;
+const info = (message, ...optionalParams) => {
+    console.info(message, ...optionalParams);
+};
+const log = (message, ...optionalParams) => {
+    console.log(message, ...optionalParams);
+};
+const debug = (message, ...optionalParams) => {
+    console.debug(message, ...optionalParams);
+};
+const error = (message, ...optionalParams) => {
+    console.error(message, ...optionalParams);
+};
+const warn = (message, ...optionalParams) => {
+    console.warn(message, ...optionalParams);
+};
+exports.logger = {
+    info,
+    log,
+    debug,
+    error,
+    warn,
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibG9nZ2VyLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3V0aWxzL2xvZ2dlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7Ozs7O0dBUUc7OztBQUVILE1BQU0sSUFBSSxHQUFHLENBQUMsT0FBYSxFQUFFLEdBQUcsY0FBcUIsRUFBRSxFQUFFO0lBQ3ZELE9BQU8sQ0FBQyxJQUFJLENBQUMsT0FBTyxFQUFFLEdBQUcsY0FBYyxDQUFDLENBQUM7QUFDM0MsQ0FBQyxDQUFDO0FBRUYsTUFBTSxHQUFHLEdBQUcsQ0FBQyxPQUFhLEVBQUUsR0FBRyxjQUFxQixFQUFFLEVBQUU7SUFDdEQsT0FBTyxDQUFDLEdBQUcsQ0FBQyxPQUFPLEVBQUUsR0FBRyxjQUFjLENBQUMsQ0FBQztBQUMxQyxDQUFDLENBQUM7QUFFRixNQUFNLEtBQUssR0FBRyxDQUFDLE9BQWEsRUFBRSxHQUFHLGNBQXFCLEVBQUUsRUFBRTtJQUN4RCxPQUFPLENBQUMsS0FBSyxDQUFDLE9BQU8sRUFBRSxHQUFHLGNBQWMsQ0FBQyxDQUFDO0FBQzVDLENBQUMsQ0FBQztBQUVGLE1BQU0sS0FBSyxHQUFHLENBQUMsT0FBYSxFQUFFLEdBQUcsY0FBcUIsRUFBRSxFQUFFO0lBQ3hELE9BQU8sQ0FBQyxLQUFLLENBQUMsT0FBTyxFQUFFLEdBQUcsY0FBYyxDQUFDLENBQUM7QUFDNUMsQ0FBQyxDQUFDO0FBRUYsTUFBTSxJQUFJLEdBQUcsQ0FBQyxPQUFhLEVBQUUsR0FBRyxjQUFxQixFQUFFLEVBQUU7SUFDdkQsT0FBTyxDQUFDLElBQUksQ0FBQyxPQUFPLEVBQUUsR0FBRyxjQUFjLENBQUMsQ0FBQztBQUMzQyxDQUFDLENBQUM7QUFFVyxRQUFBLE1BQU0sR0FBRztJQUNwQixJQUFJO0lBQ0osR0FBRztJQUNILEtBQUs7SUFDTCxLQUFLO0lBQ0wsSUFBSTtDQUNMLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIGxvZ2dlciAtIFNpbXBsZSBsb2dnaW5nIHV0aWxpdHkgZm9yIHRoZSBsaWJyYXJ5XG4gKiBcbiAqIFdIWTogUHJvdmlkZXMgYSBjb25zaXN0ZW50IGxvZ2dpbmcgaW50ZXJmYWNlIHRoYXQgY2FuIGJlIGVhc2lseVxuICogc3dhcHBlZCBvdXQgb3IgY29uZmlndXJlZCBpbiB0aGUgZnV0dXJlLlxuICogXG4gKiBERVNJR046IFRoaW4gd3JhcHBlciBhcm91bmQgY29uc29sZSBtZXRob2RzLiBLZWVwcyB0aGUgbGlicmFyeVxuICogZGVjb3VwbGVkIGZyb20gc3BlY2lmaWMgbG9nZ2luZyBpbXBsZW1lbnRhdGlvbnMuXG4gKi9cblxuY29uc3QgaW5mbyA9IChtZXNzYWdlPzogYW55LCAuLi5vcHRpb25hbFBhcmFtczogYW55W10pID0+IHtcbiAgY29uc29sZS5pbmZvKG1lc3NhZ2UsIC4uLm9wdGlvbmFsUGFyYW1zKTtcbn07XG5cbmNvbnN0IGxvZyA9IChtZXNzYWdlPzogYW55LCAuLi5vcHRpb25hbFBhcmFtczogYW55W10pID0+IHtcbiAgY29uc29sZS5sb2cobWVzc2FnZSwgLi4ub3B0aW9uYWxQYXJhbXMpO1xufTtcblxuY29uc3QgZGVidWcgPSAobWVzc2FnZT86IGFueSwgLi4ub3B0aW9uYWxQYXJhbXM6IGFueVtdKSA9PiB7XG4gIGNvbnNvbGUuZGVidWcobWVzc2FnZSwgLi4ub3B0aW9uYWxQYXJhbXMpO1xufTtcblxuY29uc3QgZXJyb3IgPSAobWVzc2FnZT86IGFueSwgLi4ub3B0aW9uYWxQYXJhbXM6IGFueVtdKSA9PiB7XG4gIGNvbnNvbGUuZXJyb3IobWVzc2FnZSwgLi4ub3B0aW9uYWxQYXJhbXMpO1xufTtcblxuY29uc3Qgd2FybiA9IChtZXNzYWdlPzogYW55LCAuLi5vcHRpb25hbFBhcmFtczogYW55W10pID0+IHtcbiAgY29uc29sZS53YXJuKG1lc3NhZ2UsIC4uLm9wdGlvbmFsUGFyYW1zKTtcbn07XG5cbmV4cG9ydCBjb25zdCBsb2dnZXIgPSB7XG4gIGluZm8sXG4gIGxvZyxcbiAgZGVidWcsXG4gIGVycm9yLFxuICB3YXJuLFxufTtcbiJdfQ==

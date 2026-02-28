@@ -1,0 +1,39 @@
+"use strict";
+/**
+ * providers.ts
+ *
+ * WHY: Factory functions for creating ScopeProvider instances from different
+ * input types (factory functions, class constructors).
+ *
+ * RESPONSIBILITIES:
+ * - Wrap factory functions as ScopeProviders
+ * - Wrap class constructors as ScopeProviders
+ *
+ * DESIGN DECISIONS:
+ * - Each provider has a 'kind' property for debugging/introspection
+ * - Providers are simple wrappers - no complex logic
+ * - Class providers use 'new' to instantiate
+ *
+ * RELATED:
+ * - {@link registry.ts} - Uses these to create providers
+ * - {@link types.ts} - Type definitions for ScopeProvider
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.makeClassProvider = exports.makeFactoryProvider = void 0;
+/** Wrap an existing factory function as a ScopeProvider */
+function makeFactoryProvider(factory) {
+    return {
+        kind: 'factory',
+        create: (ctx, stageName, ro) => factory(ctx, stageName, ro),
+    };
+}
+exports.makeFactoryProvider = makeFactoryProvider;
+/** Wrap a class constructor as a ScopeProvider */
+function makeClassProvider(Ctor) {
+    return {
+        kind: 'class',
+        create: (ctx, stageName, ro) => new Ctor(ctx, stageName, ro),
+    };
+}
+exports.makeClassProvider = makeClassProvider;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHJvdmlkZXJzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vc3JjL3Njb3BlL3Byb3ZpZGVycy9wcm92aWRlcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FrQkc7OztBQUlILDJEQUEyRDtBQUMzRCxTQUFnQixtQkFBbUIsQ0FBUyxPQUE2QjtJQUN2RSxPQUFPO1FBQ0wsSUFBSSxFQUFFLFNBQVM7UUFDZixNQUFNLEVBQUUsQ0FBQyxHQUFHLEVBQUUsU0FBUyxFQUFFLEVBQUUsRUFBRSxFQUFFLENBQUMsT0FBTyxDQUFDLEdBQUcsRUFBRSxTQUFTLEVBQUUsRUFBRSxDQUFDO0tBQzVELENBQUM7QUFDSixDQUFDO0FBTEQsa0RBS0M7QUFFRCxrREFBa0Q7QUFDbEQsU0FBZ0IsaUJBQWlCLENBQy9CLElBQWtGO0lBRWxGLE9BQU87UUFDTCxJQUFJLEVBQUUsT0FBTztRQUNiLE1BQU0sRUFBRSxDQUFDLEdBQUcsRUFBRSxTQUFTLEVBQUUsRUFBRSxFQUFFLEVBQUUsQ0FBQyxJQUFJLElBQUksQ0FBQyxHQUFHLEVBQUUsU0FBUyxFQUFFLEVBQUUsQ0FBQztLQUM3RCxDQUFDO0FBQ0osQ0FBQztBQVBELDhDQU9DIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBwcm92aWRlcnMudHNcbiAqXG4gKiBXSFk6IEZhY3RvcnkgZnVuY3Rpb25zIGZvciBjcmVhdGluZyBTY29wZVByb3ZpZGVyIGluc3RhbmNlcyBmcm9tIGRpZmZlcmVudFxuICogaW5wdXQgdHlwZXMgKGZhY3RvcnkgZnVuY3Rpb25zLCBjbGFzcyBjb25zdHJ1Y3RvcnMpLlxuICpcbiAqIFJFU1BPTlNJQklMSVRJRVM6XG4gKiAtIFdyYXAgZmFjdG9yeSBmdW5jdGlvbnMgYXMgU2NvcGVQcm92aWRlcnNcbiAqIC0gV3JhcCBjbGFzcyBjb25zdHJ1Y3RvcnMgYXMgU2NvcGVQcm92aWRlcnNcbiAqXG4gKiBERVNJR04gREVDSVNJT05TOlxuICogLSBFYWNoIHByb3ZpZGVyIGhhcyBhICdraW5kJyBwcm9wZXJ0eSBmb3IgZGVidWdnaW5nL2ludHJvc3BlY3Rpb25cbiAqIC0gUHJvdmlkZXJzIGFyZSBzaW1wbGUgd3JhcHBlcnMgLSBubyBjb21wbGV4IGxvZ2ljXG4gKiAtIENsYXNzIHByb3ZpZGVycyB1c2UgJ25ldycgdG8gaW5zdGFudGlhdGVcbiAqXG4gKiBSRUxBVEVEOlxuICogLSB7QGxpbmsgcmVnaXN0cnkudHN9IC0gVXNlcyB0aGVzZSB0byBjcmVhdGUgcHJvdmlkZXJzXG4gKiAtIHtAbGluayB0eXBlcy50c30gLSBUeXBlIGRlZmluaXRpb25zIGZvciBTY29wZVByb3ZpZGVyXG4gKi9cblxuaW1wb3J0IHsgU2NvcGVGYWN0b3J5LCBTY29wZVByb3ZpZGVyLCBTdGFnZUNvbnRleHRMaWtlIH0gZnJvbSAnLi90eXBlcyc7XG5cbi8qKiBXcmFwIGFuIGV4aXN0aW5nIGZhY3RvcnkgZnVuY3Rpb24gYXMgYSBTY29wZVByb3ZpZGVyICovXG5leHBvcnQgZnVuY3Rpb24gbWFrZUZhY3RvcnlQcm92aWRlcjxUU2NvcGU+KGZhY3Rvcnk6IFNjb3BlRmFjdG9yeTxUU2NvcGU+KTogU2NvcGVQcm92aWRlcjxUU2NvcGU+IHtcbiAgcmV0dXJuIHtcbiAgICBraW5kOiAnZmFjdG9yeScsXG4gICAgY3JlYXRlOiAoY3R4LCBzdGFnZU5hbWUsIHJvKSA9PiBmYWN0b3J5KGN0eCwgc3RhZ2VOYW1lLCBybyksXG4gIH07XG59XG5cbi8qKiBXcmFwIGEgY2xhc3MgY29uc3RydWN0b3IgYXMgYSBTY29wZVByb3ZpZGVyICovXG5leHBvcnQgZnVuY3Rpb24gbWFrZUNsYXNzUHJvdmlkZXI8VFNjb3BlPihcbiAgQ3RvcjogbmV3IChjdHg6IFN0YWdlQ29udGV4dExpa2UsIHN0YWdlTmFtZTogc3RyaW5nLCByZWFkT25seT86IHVua25vd24pID0+IFRTY29wZSxcbik6IFNjb3BlUHJvdmlkZXI8VFNjb3BlPiB7XG4gIHJldHVybiB7XG4gICAga2luZDogJ2NsYXNzJyxcbiAgICBjcmVhdGU6IChjdHgsIHN0YWdlTmFtZSwgcm8pID0+IG5ldyBDdG9yKGN0eCwgc3RhZ2VOYW1lLCBybyksXG4gIH07XG59XG4iXX0=

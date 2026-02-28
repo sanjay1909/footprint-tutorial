@@ -10,6 +10,10 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+
+# Allow vendored footprint library
+!vendor/footprint/dist
+!vendor/footprint/dist/**
 *.local
 
 # Editor directories and files

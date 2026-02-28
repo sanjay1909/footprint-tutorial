@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.defineScopeFromZod = void 0;
+const baseStateCompatible_1 = require("../../providers/baseStateCompatible");
+const scopeFactory_1 = require("./scopeFactory");
+/**
+ * Build a ScopeFactory from a Zod object schema.
+ * - Creates a lazy, copy-on-write proxy driven by the schema
+ * - Attaches BaseState-compatible helpers (addDebugInfo, getValue, setObject, etc.)
+ * - Honors strictness for validation on writes
+ */
+function defineScopeFromZod(schema, opts) {
+    var _a;
+    const strict = (_a = opts === null || opts === void 0 ? void 0 : opts.strict) !== null && _a !== void 0 ? _a : 'warn';
+    return (ctx, stageName, readOnly) => {
+        // 1) build the schema-driven proxy
+        const proxy = (0, scopeFactory_1.createScopeProxyFromZod)(ctx, schema, strict, readOnly);
+        // 2) attach BaseState-compatible methods directly on the proxy
+        return (0, baseStateCompatible_1.attachBaseStateCompat)(proxy, ctx, stageName, readOnly);
+    };
+}
+exports.defineScopeFromZod = defineScopeFromZod;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGVmaW5lU2NvcGVGcm9tWm9kLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vc3JjL3Njb3BlL3N0YXRlL3pvZC9kZWZpbmVTY29wZUZyb21ab2QudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7O0FBRUEsNkVBQTRFO0FBRTVFLGlEQUF5RDtBQU96RDs7Ozs7R0FLRztBQUNILFNBQWdCLGtCQUFrQixDQUNoQyxNQUFTLEVBQ1QsSUFBeUI7O0lBRXpCLE1BQU0sTUFBTSxHQUFHLE1BQUEsSUFBSSxhQUFKLElBQUksdUJBQUosSUFBSSxDQUFFLE1BQU0sbUNBQUksTUFBTSxDQUFDO0lBQ3RDLE9BQU8sQ0FBQyxHQUFxQixFQUFFLFNBQWlCLEVBQUUsUUFBa0IsRUFBRSxFQUFFO1FBQ3RFLG1DQUFtQztRQUNuQyxNQUFNLEtBQUssR0FBRyxJQUFBLHNDQUF1QixFQUFDLEdBQUcsRUFBRSxNQUFNLEVBQUUsTUFBTSxFQUFFLFFBQVEsQ0FBQyxDQUFDO1FBQ3JFLCtEQUErRDtRQUMvRCxPQUFPLElBQUEsMkNBQXFCLEVBQUMsS0FBSyxFQUFFLEdBQUcsRUFBRSxTQUFTLEVBQUUsUUFBUSxDQUFDLENBQUM7SUFDaEUsQ0FBQyxDQUFDO0FBQ0osQ0FBQztBQVhELGdEQVdDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgeiB9IGZyb20gJ3pvZCc7XG5cbmltcG9ydCB7IGF0dGFjaEJhc2VTdGF0ZUNvbXBhdCB9IGZyb20gJy4uLy4uL3Byb3ZpZGVycy9iYXNlU3RhdGVDb21wYXRpYmxlJztcbmltcG9ydCB0eXBlIHsgU2NvcGVGYWN0b3J5LCBTdGFnZUNvbnRleHRMaWtlLCBTdHJpY3RNb2RlIH0gZnJvbSAnLi4vLi4vcHJvdmlkZXJzL3R5cGVzJztcbmltcG9ydCB7IGNyZWF0ZVNjb3BlUHJveHlGcm9tWm9kIH0gZnJvbSAnLi9zY29wZUZhY3RvcnknO1xuXG5leHBvcnQgdHlwZSBEZWZpbmVTY29wZU9wdGlvbnMgPSB7XG4gIC8qKiBab2QgdmFsaWRhdGlvbiBtb2RlIGZvciB3cml0ZXM7IGRlZmF1bHQgXCJ3YXJuXCIgKi9cbiAgc3RyaWN0PzogU3RyaWN0TW9kZTsgLy8gXCJvZmZcIiB8IFwid2FyblwiIHwgXCJkZW55XCJcbn07XG5cbi8qKlxuICogQnVpbGQgYSBTY29wZUZhY3RvcnkgZnJvbSBhIFpvZCBvYmplY3Qgc2NoZW1hLlxuICogLSBDcmVhdGVzIGEgbGF6eSwgY29weS1vbi13cml0ZSBwcm94eSBkcml2ZW4gYnkgdGhlIHNjaGVtYVxuICogLSBBdHRhY2hlcyBCYXNlU3RhdGUtY29tcGF0aWJsZSBoZWxwZXJzIChhZGREZWJ1Z0luZm8sIGdldFZhbHVlLCBzZXRPYmplY3QsIGV0Yy4pXG4gKiAtIEhvbm9ycyBzdHJpY3RuZXNzIGZvciB2YWxpZGF0aW9uIG9uIHdyaXRlc1xuICovXG5leHBvcnQgZnVuY3Rpb24gZGVmaW5lU2NvcGVGcm9tWm9kPFMgZXh0ZW5kcyB6LlpvZE9iamVjdDxhbnk+PihcbiAgc2NoZW1hOiBTLFxuICBvcHRzPzogRGVmaW5lU2NvcGVPcHRpb25zLFxuKTogU2NvcGVGYWN0b3J5PGFueT4ge1xuICBjb25zdCBzdHJpY3QgPSBvcHRzPy5zdHJpY3QgPz8gJ3dhcm4nO1xuICByZXR1cm4gKGN0eDogU3RhZ2VDb250ZXh0TGlrZSwgc3RhZ2VOYW1lOiBzdHJpbmcsIHJlYWRPbmx5PzogdW5rbm93bikgPT4ge1xuICAgIC8vIDEpIGJ1aWxkIHRoZSBzY2hlbWEtZHJpdmVuIHByb3h5XG4gICAgY29uc3QgcHJveHkgPSBjcmVhdGVTY29wZVByb3h5RnJvbVpvZChjdHgsIHNjaGVtYSwgc3RyaWN0LCByZWFkT25seSk7XG4gICAgLy8gMikgYXR0YWNoIEJhc2VTdGF0ZS1jb21wYXRpYmxlIG1ldGhvZHMgZGlyZWN0bHkgb24gdGhlIHByb3h5XG4gICAgcmV0dXJuIGF0dGFjaEJhc2VTdGF0ZUNvbXBhdChwcm94eSwgY3R4LCBzdGFnZU5hbWUsIHJlYWRPbmx5KTtcbiAgfTtcbn1cbiJdfQ==

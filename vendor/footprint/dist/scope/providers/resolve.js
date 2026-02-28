@@ -1,0 +1,33 @@
+"use strict";
+/**
+ * resolve.ts
+ *
+ * WHY: Public API for converting arbitrary scope inputs (factory functions,
+ * classes, schemas) into the ScopeFactory type that the pipeline expects.
+ *
+ * RESPONSIBILITIES:
+ * - Normalize various input types to a consistent ScopeFactory
+ * - Re-export registerScopeResolver for plugin registration
+ * - Re-export types for consumer use
+ *
+ * DESIGN DECISIONS:
+ * - Single entry point for scope resolution
+ * - Delegates to registry for actual resolution logic
+ * - Returns a ScopeFactory that can be used directly by the pipeline
+ *
+ * RELATED:
+ * - {@link registry.ts} - Contains the resolution logic
+ * - {@link types.ts} - Type definitions
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerScopeResolver = exports.toScopeFactory = void 0;
+const registry_1 = require("./registry");
+/** Normalize a factory/class/schema-like input into a ScopeFactory the pipeline expects */
+function toScopeFactory(input, options) {
+    const provider = (0, registry_1.resolveScopeProvider)(input, options);
+    return (ctx, stageName, ro) => provider.create(ctx, stageName, ro);
+}
+exports.toScopeFactory = toScopeFactory;
+var registry_2 = require("./registry");
+Object.defineProperty(exports, "registerScopeResolver", { enumerable: true, get: function () { return registry_2.registerScopeResolver; } });
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVzb2x2ZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NyYy9zY29wZS9wcm92aWRlcnMvcmVzb2x2ZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FtQkc7OztBQUVILHlDQUFrRDtBQUdsRCwyRkFBMkY7QUFDM0YsU0FBZ0IsY0FBYyxDQUFTLEtBQWMsRUFBRSxPQUF3QjtJQUM3RSxNQUFNLFFBQVEsR0FBMEIsSUFBQSwrQkFBb0IsRUFBUyxLQUFLLEVBQUUsT0FBTyxDQUFDLENBQUM7SUFDckYsT0FBTyxDQUFDLEdBQUcsRUFBRSxTQUFTLEVBQUUsRUFBRSxFQUFFLEVBQUUsQ0FBQyxRQUFRLENBQUMsTUFBTSxDQUFDLEdBQUcsRUFBRSxTQUFTLEVBQUUsRUFBRSxDQUFDLENBQUM7QUFDckUsQ0FBQztBQUhELHdDQUdDO0FBRUQsdUNBQW1EO0FBQTFDLGlIQUFBLHFCQUFxQixPQUFBIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiByZXNvbHZlLnRzXG4gKlxuICogV0hZOiBQdWJsaWMgQVBJIGZvciBjb252ZXJ0aW5nIGFyYml0cmFyeSBzY29wZSBpbnB1dHMgKGZhY3RvcnkgZnVuY3Rpb25zLFxuICogY2xhc3Nlcywgc2NoZW1hcykgaW50byB0aGUgU2NvcGVGYWN0b3J5IHR5cGUgdGhhdCB0aGUgcGlwZWxpbmUgZXhwZWN0cy5cbiAqXG4gKiBSRVNQT05TSUJJTElUSUVTOlxuICogLSBOb3JtYWxpemUgdmFyaW91cyBpbnB1dCB0eXBlcyB0byBhIGNvbnNpc3RlbnQgU2NvcGVGYWN0b3J5XG4gKiAtIFJlLWV4cG9ydCByZWdpc3RlclNjb3BlUmVzb2x2ZXIgZm9yIHBsdWdpbiByZWdpc3RyYXRpb25cbiAqIC0gUmUtZXhwb3J0IHR5cGVzIGZvciBjb25zdW1lciB1c2VcbiAqXG4gKiBERVNJR04gREVDSVNJT05TOlxuICogLSBTaW5nbGUgZW50cnkgcG9pbnQgZm9yIHNjb3BlIHJlc29sdXRpb25cbiAqIC0gRGVsZWdhdGVzIHRvIHJlZ2lzdHJ5IGZvciBhY3R1YWwgcmVzb2x1dGlvbiBsb2dpY1xuICogLSBSZXR1cm5zIGEgU2NvcGVGYWN0b3J5IHRoYXQgY2FuIGJlIHVzZWQgZGlyZWN0bHkgYnkgdGhlIHBpcGVsaW5lXG4gKlxuICogUkVMQVRFRDpcbiAqIC0ge0BsaW5rIHJlZ2lzdHJ5LnRzfSAtIENvbnRhaW5zIHRoZSByZXNvbHV0aW9uIGxvZ2ljXG4gKiAtIHtAbGluayB0eXBlcy50c30gLSBUeXBlIGRlZmluaXRpb25zXG4gKi9cblxuaW1wb3J0IHsgcmVzb2x2ZVNjb3BlUHJvdmlkZXIgfSBmcm9tICcuL3JlZ2lzdHJ5JztcbmltcG9ydCB0eXBlIHsgUmVzb2x2ZU9wdGlvbnMsIFNjb3BlRmFjdG9yeSwgU2NvcGVQcm92aWRlciB9IGZyb20gJy4vdHlwZXMnO1xuXG4vKiogTm9ybWFsaXplIGEgZmFjdG9yeS9jbGFzcy9zY2hlbWEtbGlrZSBpbnB1dCBpbnRvIGEgU2NvcGVGYWN0b3J5IHRoZSBwaXBlbGluZSBleHBlY3RzICovXG5leHBvcnQgZnVuY3Rpb24gdG9TY29wZUZhY3Rvcnk8VFNjb3BlPihpbnB1dDogdW5rbm93biwgb3B0aW9ucz86IFJlc29sdmVPcHRpb25zKTogU2NvcGVGYWN0b3J5PFRTY29wZT4ge1xuICBjb25zdCBwcm92aWRlcjogU2NvcGVQcm92aWRlcjxUU2NvcGU+ID0gcmVzb2x2ZVNjb3BlUHJvdmlkZXI8VFNjb3BlPihpbnB1dCwgb3B0aW9ucyk7XG4gIHJldHVybiAoY3R4LCBzdGFnZU5hbWUsIHJvKSA9PiBwcm92aWRlci5jcmVhdGUoY3R4LCBzdGFnZU5hbWUsIHJvKTtcbn1cblxuZXhwb3J0IHsgcmVnaXN0ZXJTY29wZVJlc29sdmVyIH0gZnJvbSAnLi9yZWdpc3RyeSc7XG5leHBvcnQgdHlwZSB7IFJlc29sdmVPcHRpb25zLCBTY29wZVByb3ZpZGVyIH0gZnJvbSAnLi90eXBlcyc7XG4iXX0=

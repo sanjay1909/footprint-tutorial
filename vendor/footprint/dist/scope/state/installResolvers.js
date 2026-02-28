@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.installDefaultResolvers = void 0;
+const resolve_1 = require("../providers/resolve");
+const zod_1 = require("./zod");
+let installed = false;
+function installDefaultResolvers() {
+    if (installed)
+        return;
+    (0, resolve_1.registerScopeResolver)(zod_1.ZodScopeResolver);
+    installed = true;
+}
+exports.installDefaultResolvers = installDefaultResolvers;
+installDefaultResolvers();
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5zdGFsbFJlc29sdmVycy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NyYy9zY29wZS9zdGF0ZS9pbnN0YWxsUmVzb2x2ZXJzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQUFBLGtEQUE2RDtBQUM3RCwrQkFBeUM7QUFFekMsSUFBSSxTQUFTLEdBQUcsS0FBSyxDQUFDO0FBQ3RCLFNBQWdCLHVCQUF1QjtJQUNyQyxJQUFJLFNBQVM7UUFBRSxPQUFPO0lBQ3RCLElBQUEsK0JBQXFCLEVBQUMsc0JBQWdCLENBQUMsQ0FBQztJQUN4QyxTQUFTLEdBQUcsSUFBSSxDQUFDO0FBQ25CLENBQUM7QUFKRCwwREFJQztBQUVELHVCQUF1QixFQUFFLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyByZWdpc3RlclNjb3BlUmVzb2x2ZXIgfSBmcm9tICcuLi9wcm92aWRlcnMvcmVzb2x2ZSc7XG5pbXBvcnQgeyBab2RTY29wZVJlc29sdmVyIH0gZnJvbSAnLi96b2QnO1xuXG5sZXQgaW5zdGFsbGVkID0gZmFsc2U7XG5leHBvcnQgZnVuY3Rpb24gaW5zdGFsbERlZmF1bHRSZXNvbHZlcnMoKSB7XG4gIGlmIChpbnN0YWxsZWQpIHJldHVybjtcbiAgcmVnaXN0ZXJTY29wZVJlc29sdmVyKFpvZFNjb3BlUmVzb2x2ZXIpO1xuICBpbnN0YWxsZWQgPSB0cnVlO1xufVxuXG5pbnN0YWxsRGVmYXVsdFJlc29sdmVycygpO1xuIl19

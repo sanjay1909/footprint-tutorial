@@ -1,0 +1,29 @@
+"use strict";
+/**
+ * Core Builder Module - Barrel Export
+ *
+ * WHY: This barrel export provides a single entry point for all builder-related
+ * exports. Consumers can import everything they need from 'core/builder' instead
+ * of importing from individual files.
+ *
+ * EXPORTS:
+ * - FlowChartBuilder: Main builder class for constructing flowcharts
+ * - DeciderList, SelectorList: Helper classes for branching
+ * - flowChart: Factory function for creating builders
+ * - specToStageNode: Utility for converting specs to stage nodes
+ * - Various types for flowchart construction
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.specToStageNode = exports.flowChart = exports.SelectorList = exports.DeciderList = exports.FlowChartBuilder = void 0;
+// Main builder class and helpers
+var FlowChartBuilder_1 = require("./FlowChartBuilder");
+Object.defineProperty(exports, "FlowChartBuilder", { enumerable: true, get: function () { return FlowChartBuilder_1.FlowChartBuilder; } });
+Object.defineProperty(exports, "DeciderList", { enumerable: true, get: function () { return FlowChartBuilder_1.DeciderList; } });
+Object.defineProperty(exports, "SelectorList", { enumerable: true, get: function () { return FlowChartBuilder_1.SelectorList; } });
+// Factory function
+var FlowChartBuilder_2 = require("./FlowChartBuilder");
+Object.defineProperty(exports, "flowChart", { enumerable: true, get: function () { return FlowChartBuilder_2.flowChart; } });
+// Utility function
+var FlowChartBuilder_3 = require("./FlowChartBuilder");
+Object.defineProperty(exports, "specToStageNode", { enumerable: true, get: function () { return FlowChartBuilder_3.specToStageNode; } });
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvY29yZS9idWlsZGVyL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTs7Ozs7Ozs7Ozs7OztHQWFHOzs7QUFFSCxpQ0FBaUM7QUFDakMsdURBSTRCO0FBSDFCLG9IQUFBLGdCQUFnQixPQUFBO0FBQ2hCLCtHQUFBLFdBQVcsT0FBQTtBQUNYLGdIQUFBLFlBQVksT0FBQTtBQUdkLG1CQUFtQjtBQUNuQix1REFBK0M7QUFBdEMsNkdBQUEsU0FBUyxPQUFBO0FBRWxCLG1CQUFtQjtBQUNuQix1REFBcUQ7QUFBNUMsbUhBQUEsZUFBZSxPQUFBIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBDb3JlIEJ1aWxkZXIgTW9kdWxlIC0gQmFycmVsIEV4cG9ydFxuICpcbiAqIFdIWTogVGhpcyBiYXJyZWwgZXhwb3J0IHByb3ZpZGVzIGEgc2luZ2xlIGVudHJ5IHBvaW50IGZvciBhbGwgYnVpbGRlci1yZWxhdGVkXG4gKiBleHBvcnRzLiBDb25zdW1lcnMgY2FuIGltcG9ydCBldmVyeXRoaW5nIHRoZXkgbmVlZCBmcm9tICdjb3JlL2J1aWxkZXInIGluc3RlYWRcbiAqIG9mIGltcG9ydGluZyBmcm9tIGluZGl2aWR1YWwgZmlsZXMuXG4gKlxuICogRVhQT1JUUzpcbiAqIC0gRmxvd0NoYXJ0QnVpbGRlcjogTWFpbiBidWlsZGVyIGNsYXNzIGZvciBjb25zdHJ1Y3RpbmcgZmxvd2NoYXJ0c1xuICogLSBEZWNpZGVyTGlzdCwgU2VsZWN0b3JMaXN0OiBIZWxwZXIgY2xhc3NlcyBmb3IgYnJhbmNoaW5nXG4gKiAtIGZsb3dDaGFydDogRmFjdG9yeSBmdW5jdGlvbiBmb3IgY3JlYXRpbmcgYnVpbGRlcnNcbiAqIC0gc3BlY1RvU3RhZ2VOb2RlOiBVdGlsaXR5IGZvciBjb252ZXJ0aW5nIHNwZWNzIHRvIHN0YWdlIG5vZGVzXG4gKiAtIFZhcmlvdXMgdHlwZXMgZm9yIGZsb3djaGFydCBjb25zdHJ1Y3Rpb25cbiAqL1xuXG4vLyBNYWluIGJ1aWxkZXIgY2xhc3MgYW5kIGhlbHBlcnNcbmV4cG9ydCB7XG4gIEZsb3dDaGFydEJ1aWxkZXIsXG4gIERlY2lkZXJMaXN0LFxuICBTZWxlY3Rvckxpc3QsXG59IGZyb20gJy4vRmxvd0NoYXJ0QnVpbGRlcic7XG5cbi8vIEZhY3RvcnkgZnVuY3Rpb25cbmV4cG9ydCB7IGZsb3dDaGFydCB9IGZyb20gJy4vRmxvd0NoYXJ0QnVpbGRlcic7XG5cbi8vIFV0aWxpdHkgZnVuY3Rpb25cbmV4cG9ydCB7IHNwZWNUb1N0YWdlTm9kZSB9IGZyb20gJy4vRmxvd0NoYXJ0QnVpbGRlcic7XG5cbi8vIFR5cGVzXG5leHBvcnQgdHlwZSB7XG4gIEZsb3dDaGFydFNwZWMsXG4gIEJ1aWxkVGltZU5vZGVNZXRhZGF0YSxcbiAgQnVpbGRUaW1lRXh0cmFjdG9yLFxuICBTaW1wbGlmaWVkUGFyYWxsZWxTcGVjLFxuICBTZXJpYWxpemVkUGlwZWxpbmVTdHJ1Y3R1cmUsXG4gIEZsb3dDaGFydCxcbiAgRXhlY09wdGlvbnMsXG59IGZyb20gJy4vRmxvd0NoYXJ0QnVpbGRlcic7XG5cbi8vIExlZ2FjeSB0eXBlIGFsaWFzZXMgKGZvciBiYWNrd2FyZCBjb21wYXRpYmlsaXR5KVxuZXhwb3J0IHR5cGUge1xuICBCdWlsdEZsb3csXG4gIFN0YWdlRm4sXG4gIFBhcmFsbGVsU3BlYyxcbiAgQnJhbmNoQm9keSxcbiAgQnJhbmNoU3BlYyxcbiAgU3ViZmxvd1JlZixcbn0gZnJvbSAnLi9GbG93Q2hhcnRCdWlsZGVyJztcblxuLy8gUmUtZXhwb3J0ZWQgdHlwZXMgZnJvbSBleGVjdXRvciAoZm9yIGNvbnZlbmllbmNlKVxuZXhwb3J0IHR5cGUge1xuICBTdHJlYW1IYW5kbGVycyxcbiAgU3RyZWFtVG9rZW5IYW5kbGVyLFxuICBTdHJlYW1MaWZlY3ljbGVIYW5kbGVyLFxuICBTZWxlY3RvcixcbiAgU3ViZmxvd01vdW50T3B0aW9ucyxcbn0gZnJvbSAnLi9GbG93Q2hhcnRCdWlsZGVyJztcbiJdfQ==
