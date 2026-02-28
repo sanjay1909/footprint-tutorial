@@ -42,6 +42,22 @@ export interface WizardStep {
   activeEdgeIds?: string[];
 }
 
+// ─── Modals ──────────────────────────────────────────────────
+
+export interface ModalSlide {
+  title: string;
+  body: string;
+  bullets?: string[];
+  /** If true, render JSON tree of execution data */
+  jsonPreview?: boolean;
+}
+
+export interface PhaseModal {
+  slides: ModalSlide[];
+  /** Button text on final slide: "Run Pipeline", "Let's Traverse", etc. */
+  actionLabel: string;
+}
+
 // ─── Phases ───────────────────────────────────────────────────
 
 export interface LessonStageDefinition {
@@ -56,6 +72,8 @@ interface PhaseBase {
   left: PanelSlot;
   right: PanelSlot;
   transition: 'none' | 'slide-left' | 'fade';
+  /** Modal shown at end of this phase before transitioning to next */
+  exitModal?: PhaseModal;
 }
 
 export interface StaticPhase extends PhaseBase {
@@ -70,7 +88,12 @@ export interface RunPhase extends PhaseBase {
   steps: WizardStep[]; // Populated from execution results
 }
 
-export type WizardPhase = StaticPhase | RunPhase;
+export interface TraversePhase extends PhaseBase {
+  kind: 'traverse';
+  steps: WizardStep[]; // Derived from execution at runtime
+}
+
+export type WizardPhase = StaticPhase | RunPhase | TraversePhase;
 
 // ─── Chapters ─────────────────────────────────────────────────
 

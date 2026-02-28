@@ -4,6 +4,7 @@ import { useWizard } from '../wizard/useWizard';
 import { wizardChapters } from '../wizard-chapters';
 import { WizardHeader } from '../layout/WizardHeader';
 import { WizardLayout } from '../layout/WizardLayout';
+import { WizardModal } from '../layout/WizardModal';
 import { StepControls } from '../layout/StepControls';
 import { CodePanel } from '../panels/CodePanel';
 import { FlowchartPanel } from '../panels/FlowchartPanel';
@@ -17,12 +18,29 @@ export function WizardPage() {
   // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      // Modal keyboard: arrows navigate slides, Enter triggers action
+      if (w.modalVisible) {
+        if (e.key === 'ArrowRight') {
+          if (w.modalConfig && w.modalSlideIndex < w.modalConfig.slides.length - 1) {
+            w.nextModalSlide();
+          }
+        }
+        if (e.key === 'ArrowLeft') w.prevModalSlide();
+        if (e.key === 'Enter') {
+          if (w.modalConfig && w.modalSlideIndex === w.modalConfig.slides.length - 1) {
+            w.dismissModal();
+          } else {
+            w.nextModalSlide();
+          }
+        }
+        return;
+      }
       if (e.key === 'ArrowRight' && w.canGoNext) w.nextStep();
       if (e.key === 'ArrowLeft' && w.canGoPrev) w.prevStep();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [w.canGoNext, w.canGoPrev, w.nextStep, w.prevStep]);
+  }, [w.modalVisible, w.modalConfig, w.modalSlideIndex, w.canGoNext, w.canGoPrev, w.nextStep, w.prevStep, w.nextModalSlide, w.prevModalSlide, w.dismissModal]);
 
   // ReactFlow layout
   const { nodes, edges } = useFlowLayout(
@@ -42,7 +60,6 @@ export function WizardPage() {
   };
 
   // Stable phase value: 'build' during the BUILD phase, 'execute' otherwise
-  // This prevents auto-play resets from phase value toggling
   const isBuildPhase = w.phase.left === 'code' && w.phase.right === 'flowchart';
   const controlPhase = isBuildPhase ? 'build' as const : 'execute' as const;
 
@@ -120,6 +137,18 @@ export function WizardPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Modal checkpoint between phases */}
+      {w.modalVisible && w.modalConfig && (
+        <WizardModal
+          config={w.modalConfig}
+          slideIndex={w.modalSlideIndex}
+          onNextSlide={w.nextModalSlide}
+          onPrevSlide={w.prevModalSlide}
+          onAction={w.dismissModal}
+          execution={w.execution ?? undefined}
+        />
       )}
     </div>
   );

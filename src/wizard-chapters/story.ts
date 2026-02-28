@@ -41,7 +41,7 @@ const ALL_EDGES = [E_1, E_2];
 export const storyChapter: WizardChapter = {
   id: 'story',
   title: 'The FootPrint Story',
-  subtitle: 'Build → Run → Observe',
+  subtitle: 'Build → Run → Traverse → Observe',
   badge: 'STORY',
   badgeColor: 'cyan',
   phases: [
@@ -224,7 +224,7 @@ const processPayment = async (scope: BaseState) => {
         {
           id: 'ready-to-run',
           label: 'Ready to Run',
-          explanation: 'The pipeline is built. Click "Run It" to execute it for real!',
+          explanation: 'The pipeline is built. Everything is connected and ready to execute.',
           code: `// The pipeline is built. Time to run it.
 const chart = new FlowChartBuilder()
   .start('ValidateCart', validateCart,
@@ -244,17 +244,34 @@ await executor.run();
 // When this executes:
 // 1. Each stage runs in order
 // 2. Scope accumulates state (WriteBuffer commits per stage)
-// 3. Every write is tracked
-// → Click "Run It" — flowchart slides left, Memory appears`,
+// 3. Every write is tracked`,
           highlightLines: [14, 15],
           nodes: ALL_NODES,
           edges: ALL_EDGES,
           concept: {
-            title: 'About to Execute',
-            body: 'Click "Run It" to execute the pipeline for real. Watch the panels transition — flowchart moves left, Memory Inspector slides in from the right.',
+            title: 'Pipeline Complete',
+            body: 'Three stages, shared Scope memory, declarative connections. The flowchart is ready to execute.',
           },
         },
       ],
+      exitModal: {
+        slides: [
+          {
+            title: 'Pipeline Built',
+            body: 'You defined a 3-stage checkout pipeline using FlowChartBuilder. Each stage communicates through Scope — shared memory that tracks every read and write.',
+            bullets: [
+              'ValidateCart → ProcessPayment → SendReceipt',
+              'Stages are decoupled — they only know about Scope',
+              'The builder creates a flowchart you can execute',
+            ],
+          },
+          {
+            title: 'Time to Execute',
+            body: 'A pipeline normally executes when a user clicks, a system triggers, an event fires, or a service call arrives. Let\'s do that now.',
+          },
+        ],
+        actionLabel: 'Run Pipeline',
+      },
     },
 
     // ── Phase 2: RUN (real execution) ─────────────────────────
@@ -272,9 +289,53 @@ await executor.run();
       ],
       enableNarrative: true,
       steps: [], // Generated from execution results
+      exitModal: {
+        slides: [
+          {
+            title: 'Execution Complete',
+            body: 'The pipeline ran successfully. Each stage executed in order, reading and writing to Scope. Memory captured every mutation.',
+          },
+          {
+            title: 'What If Something Goes Wrong?',
+            body: 'When errors happen, you need answers: What ran? In what order? What data existed at each step? Can a human debug this? Can an LLM reason about it? Only if you capture the right data.',
+            bullets: [
+              'What was the exact execution path?',
+              'What state existed at each stage?',
+              'What decisions were made and why?',
+              'If we can traverse the execution path again, we can get those details.',
+            ],
+          },
+        ],
+        actionLabel: "Let's Traverse",
+      },
     },
 
-    // ── Phase 3: OBSERVE ──────────────────────────────────────
+    // ── Phase 3: TRAVERSE (replay execution path) ──────────────
+    {
+      kind: 'traverse',
+      id: 'traverse',
+      title: 'Traverse',
+      left: 'flowchart',
+      right: 'memory',
+      transition: 'slide-left',
+      steps: [], // Derived from execution snapshots at runtime
+      exitModal: {
+        slides: [
+          {
+            title: 'Traversal Complete',
+            body: 'You walked through every stage — seeing the structure (Map), execution order (Path), and data captured at each point (Trace). Here is the full traversal data:',
+            jsonPreview: true,
+          },
+          {
+            title: 'From Data to Insight',
+            body: 'Raw traversal data is powerful but not enough on its own. What if you could extract specific information while traversing — metrics for dashboards, error context for debugging, decision traces for AI reasoning? That\'s where observability comes in.',
+          },
+        ],
+        actionLabel: 'See Observability',
+      },
+    },
+
+    // ── Phase 4: OBSERVE (extract + feed systems) ──────────────
     {
       kind: 'static',
       id: 'observe',
@@ -285,35 +346,35 @@ await executor.run();
       steps: [
         {
           id: 'extractors',
-          label: 'What Was Extracted',
-          explanation: 'TraversalExtractor captured a snapshot at each stage — scope state, outputs, metadata.',
+          label: 'Extracting from Traversal',
+          explanation: 'TraversalExtractor hooks into each stage during traversal — capturing scope state, outputs, and metadata.',
           nodes: ALL_NODES,
           edges: ALL_EDGES,
           concept: {
             title: 'TraversalExtractor',
-            body: 'Hooks into each stage during traversal. Captures scope state, debug info, and outputs — the raw material for observability.',
+            body: 'While traversing the execution path, extractors pull specific data at each stage. This is the bridge from raw traversal data to structured observability.',
           },
         },
         {
           id: 'recorders',
-          label: 'Recorders',
-          explanation: 'NarrativeRecorder generates human-readable stories. MetricRecorder tracks counts and timing.',
+          label: 'Recorders Feed Systems',
+          explanation: 'NarrativeRecorder generates human-readable stories. MetricRecorder tracks counts and timing. Each feeds a different system.',
           nodes: ALL_NODES,
           edges: ALL_EDGES,
           concept: {
-            title: 'Built-in Recorders',
-            body: 'NarrativeRecorder turns execution into a story. MetricRecorder counts reads, writes, and stages. DebugRecorder captures verbose logs.',
+            title: 'Pluggable Recorders',
+            body: 'NarrativeRecorder → audit trails & AI context. MetricRecorder → dashboards & alerts. DebugRecorder → error investigation. Each extracts what its system needs.',
           },
         },
         {
           id: 'full-picture',
-          label: 'The Full Picture',
-          explanation: 'Build pipelines from functions. Run with shared memory. Observe everything.',
+          label: 'This is Observability',
+          explanation: 'Build pipelines from functions. Run with shared memory. Traverse to capture. Extract to observe.',
           nodes: ALL_NODES,
           edges: ALL_EDGES,
           concept: {
             title: 'FootPrint',
-            body: 'Connected execution logging. Transform application execution into structured, causal, replayable context — for AI reasoning, dashboards, or debugging.',
+            body: 'Observability isn\'t just logging — it\'s extracting structured, causal context from execution traversals and feeding it to the systems that need it: AI reasoning, dashboards, debugging, audit.',
           },
         },
       ],

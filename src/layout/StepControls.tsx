@@ -27,7 +27,6 @@ export function StepControls({
   phase,
 }: StepControlsProps) {
   const explanation = 'explanation' in currentStep ? currentStep.explanation : currentStep.label;
-  const isLastBuildStep = phase === 'build' && stepIndex === totalSteps - 1;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const nextStepRef = useRef(nextStep);
@@ -96,13 +95,9 @@ export function StepControls({
       <button
         onClick={nextStep}
         disabled={!canGoNext || isPlaying}
-        className={`px-3 py-1.5 rounded border text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
-          isLastBuildStep
-            ? 'bg-green/20 text-green border-green/40 hover:bg-green/30'
-            : 'bg-surface2 text-gray-300 border-border hover:border-accent'
-        }`}
+        className="px-3 py-1.5 rounded border text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed bg-surface2 text-gray-300 border-border hover:border-accent"
       >
-        {isLastBuildStep ? 'Run It' : 'Next'}
+        Next
       </button>
 
       <div className="h-4 w-px bg-border" />

@@ -13,6 +13,7 @@ interface WizardHeaderProps {
 const phaseColors: Record<string, { active: string; done: string }> = {
   build: { active: 'bg-accent/20 text-accent border-accent/40', done: 'bg-green/20 text-green border-green/40' },
   run: { active: 'bg-green/20 text-green border-green/40', done: 'bg-green/20 text-green border-green/40' },
+  traverse: { active: 'bg-cyan/20 text-cyan border-cyan/40', done: 'bg-green/20 text-green border-green/40' },
   observe: { active: 'bg-orange/20 text-orange border-orange/40', done: 'bg-green/20 text-green border-green/40' },
 };
 
@@ -20,6 +21,7 @@ function getPhaseColorKey(title: string): string {
   const t = title.toLowerCase();
   if (t.includes('build')) return 'build';
   if (t.includes('run')) return 'run';
+  if (t.includes('traverse')) return 'traverse';
   if (t.includes('observe')) return 'observe';
   return 'build';
 }
@@ -66,7 +68,7 @@ export function WizardHeader({
               </span>
               {i < chapter.phases.length - 1 && (
                 <span className={`text-[10px] ${isDone ? 'text-green/50' : 'text-muted/30'}`}>
-                  \u2192
+                  {'\u2192'}
                 </span>
               )}
             </div>

@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import type {
-  WizardChapter, WizardStep, RunPhase,
+  WizardChapter, WizardStep, RunPhase, PhaseModal,
   ExecutionResult, CapturedStageState,
   FlowNode, FlowEdge,
 } from './types';
@@ -12,10 +12,13 @@ interface WizardState {
   stepIndex: number;
   isRunning: boolean;
   execution: ExecutionResult | null;
-  /** Derived steps for run phases (generated from execution) */
+  /** Derived steps for run/traverse phases (generated from execution) */
   derivedSteps: WizardStep[] | null;
   transitionDirection: 'none' | 'slide-left' | 'fade';
   isTransitioning: boolean;
+  /** Modal checkpoint state */
+  modalVisible: boolean;
+  modalSlideIndex: number;
 }
 
 export function useWizard(chapters: WizardChapter[]) {
@@ -28,6 +31,8 @@ export function useWizard(chapters: WizardChapter[]) {
     derivedSteps: null,
     transitionDirection: 'none',
     isTransitioning: false,
+    modalVisible: false,
+    modalSlideIndex: 0,
   });
 
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -36,8 +41,8 @@ export function useWizard(chapters: WizardChapter[]) {
   const chapter = chapters[state.chapterIndex];
   const phase = chapter.phases[state.phaseIndex];
 
-  // Steps: use derived steps only for run phases that have been executed
-  const steps = (phase.kind === 'run' && state.derivedSteps)
+  // Steps: use derived steps for run and traverse phases that have been executed
+  const steps = ((phase.kind === 'run' || phase.kind === 'traverse') && state.derivedSteps)
     ? state.derivedSteps
     : phase.steps;
   const currentStep = steps[state.stepIndex] as WizardStep | undefined;
@@ -99,9 +104,83 @@ export function useWizard(chapters: WizardChapter[]) {
     }
   }, [state.chapterIndex, chapters, triggerTransition]);
 
+  // ─── Derive Traverse Steps ────────────────────────────────────
+  const deriveTraverseSteps = useCallback((
+    execution: ExecutionResult,
+  ): WizardStep[] => {
+    return execution.stageSnapshots.map((snap, i) => ({
+      id: `traverse-${snap.stageName}`,
+      label: `Traversing: ${snap.stageName}`,
+      explanation: `Stage ${i + 1} of ${execution.stageSnapshots.length} — examining scope state and output`,
+      nodes: execution.flowNodes,
+      edges: execution.flowEdges,
+      activeNodeId: snap.stageName,
+      activeEdgeIds: i > 0
+        ? [`e-${execution.stageSnapshots[i - 1].stageName}-${snap.stageName}`]
+        : [],
+    }));
+  }, []);
+
+  // ─── Phase Transition (called by dismissModal or nextStep) ────
+  const transitionToPhase = useCallback((nextPhaseIdx: number) => {
+    const nextPhase = chapter.phases[nextPhaseIdx];
+
+    if (nextPhase.kind === 'run') {
+      runAndTransition(nextPhase, nextPhaseIdx);
+      return;
+    }
+
+    if (nextPhase.kind === 'traverse' && state.execution) {
+      const derived = deriveTraverseSteps(state.execution);
+      const dir = nextPhase.transition === 'fade' ? 'fade' : 'slide-left';
+      triggerTransition(dir, () => {
+        setState(s => ({
+          ...s,
+          phaseIndex: nextPhaseIdx,
+          stepIndex: 0,
+          derivedSteps: derived,
+        }));
+      });
+      return;
+    }
+
+    // Static phase: animate transition — PRESERVE execution within chapter
+    const dir = nextPhase.transition === 'fade' ? 'fade' : 'slide-left';
+    triggerTransition(dir, () => {
+      setState(s => ({
+        ...s,
+        phaseIndex: nextPhaseIdx,
+        stepIndex: 0,
+        // execution & derivedSteps preserved for observe phase
+      }));
+    });
+  }, [chapter, state.execution, runAndTransition, deriveTraverseSteps, triggerTransition]);
+
+  // ─── Modal Navigation ──────────────────────────────────────
+  const nextModalSlide = useCallback(() => {
+    setState(s => {
+      const modal = chapter.phases[s.phaseIndex].exitModal;
+      if (!modal || s.modalSlideIndex >= modal.slides.length - 1) return s;
+      return { ...s, modalSlideIndex: s.modalSlideIndex + 1 };
+    });
+  }, [chapter]);
+
+  const prevModalSlide = useCallback(() => {
+    setState(s => ({
+      ...s,
+      modalSlideIndex: Math.max(0, s.modalSlideIndex - 1),
+    }));
+  }, []);
+
+  const dismissModal = useCallback(() => {
+    const nextPhaseIdx = state.phaseIndex + 1;
+    setState(s => ({ ...s, modalVisible: false, modalSlideIndex: 0 }));
+    transitionToPhase(nextPhaseIdx);
+  }, [state.phaseIndex, transitionToPhase]);
+
   // ─── Navigation ─────────────────────────────────────────────
   const canGoNext = useMemo(() => {
-    if (state.isRunning || state.isTransitioning) return false;
+    if (state.isRunning || state.isTransitioning || state.modalVisible) return false;
     if (state.stepIndex < totalSteps - 1) return true;
     if (state.phaseIndex < chapter.phases.length - 1) return true;
     if (state.chapterIndex < chapters.length - 1) return true;
@@ -109,35 +188,23 @@ export function useWizard(chapters: WizardChapter[]) {
   }, [state, totalSteps, chapter, chapters]);
 
   const canGoPrev = useMemo(() => {
-    if (state.isRunning || state.isTransitioning) return false;
+    if (state.isRunning || state.isTransitioning || state.modalVisible) return false;
     return state.stepIndex > 0 || state.phaseIndex > 0 || state.chapterIndex > 0;
   }, [state]);
 
   const nextStep = useCallback(() => {
-    if (state.isRunning || state.isTransitioning) return;
+    if (state.isRunning || state.isTransitioning || state.modalVisible) return;
 
     if (state.stepIndex < totalSteps - 1) {
       setState(s => ({ ...s, stepIndex: s.stepIndex + 1 }));
     } else if (state.phaseIndex < chapter.phases.length - 1) {
-      // Advance to next phase within the same chapter
-      const nextPhaseIdx = state.phaseIndex + 1;
-      const nextPhase = chapter.phases[nextPhaseIdx];
-
-      if (nextPhase.kind === 'run') {
-        runAndTransition(nextPhase, nextPhaseIdx);
+      // End of phase — show exit modal if configured
+      if (phase.exitModal) {
+        setState(s => ({ ...s, modalVisible: true, modalSlideIndex: 0 }));
         return;
       }
-
-      // Static phase: animate transition — PRESERVE execution within chapter
-      const dir = nextPhase.transition === 'fade' ? 'fade' : 'slide-left';
-      triggerTransition(dir, () => {
-        setState(s => ({
-          ...s,
-          phaseIndex: nextPhaseIdx,
-          stepIndex: 0,
-          // execution & derivedSteps preserved for observe phase
-        }));
-      });
+      // No modal — transition directly
+      transitionToPhase(state.phaseIndex + 1);
     } else if (state.chapterIndex < chapters.length - 1) {
       // Advance to next chapter — reset everything
       const nextChapterIdx = state.chapterIndex + 1;
@@ -155,10 +222,10 @@ export function useWizard(chapters: WizardChapter[]) {
         }));
       });
     }
-  }, [state, totalSteps, chapter, chapters, runAndTransition, triggerTransition]);
+  }, [state, totalSteps, chapter, chapters, phase, transitionToPhase, triggerTransition]);
 
   const prevStep = useCallback(() => {
-    if (state.isRunning || state.isTransitioning) return;
+    if (state.isRunning || state.isTransitioning || state.modalVisible) return;
 
     if (state.stepIndex > 0) {
       setState(s => ({ ...s, stepIndex: s.stepIndex - 1 }));
@@ -167,7 +234,7 @@ export function useWizard(chapters: WizardChapter[]) {
       const prevPhase = chapter.phases[prevPhaseIdx];
 
       // Calculate correct last step for the previous phase
-      const prevPhaseSteps = (prevPhase.kind === 'run' && state.derivedSteps)
+      const prevPhaseSteps = ((prevPhase.kind === 'run' || prevPhase.kind === 'traverse') && state.derivedSteps)
         ? state.derivedSteps
         : prevPhase.steps;
 
@@ -248,12 +315,10 @@ export function useWizard(chapters: WizardChapter[]) {
   const highlightLines = currentStep?.highlightLines;
   const concept = currentStep?.concept;
 
-  const isLastStepBeforeRun = useMemo(() => {
-    if (state.stepIndex < totalSteps - 1) return false;
-    const nextPhaseIdx = state.phaseIndex + 1;
-    if (nextPhaseIdx >= chapter.phases.length) return false;
-    return chapter.phases[nextPhaseIdx].kind === 'run';
-  }, [state.stepIndex, state.phaseIndex, totalSteps, chapter]);
+  // Modal config for current phase
+  const modalConfig: PhaseModal | undefined = state.modalVisible
+    ? phase.exitModal
+    : undefined;
 
   return {
     chapter,
@@ -273,7 +338,14 @@ export function useWizard(chapters: WizardChapter[]) {
     nextStep,
     prevStep,
     goToStep,
-    isLastStepBeforeRun,
+
+    // Modal
+    modalVisible: state.modalVisible,
+    modalSlideIndex: state.modalSlideIndex,
+    modalConfig,
+    nextModalSlide,
+    prevModalSlide,
+    dismissModal,
 
     isRunning: state.isRunning,
     execution: state.execution,
